@@ -1,0 +1,4 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "pgsql.connection": "postgres://thinkful:thinkful@localhost:5432/recipify"
+}
