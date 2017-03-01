@@ -14,11 +14,25 @@ const app = express();
 app.use(bodyParser.json());
 
 app.get('/recipes', (req, res) => {
-    knex.select('name', 'description', 'step')
+    knex.select('name', 'step')
     .join('steps', 'steps.recipe_id', 'recipes.id')
     .from('recipes')
     .then(results => {
-        res.json(results)
+      const finalRecipes = [];
+      results.forEach(result => {
+        if (finalRecipes.length === 0){
+          finalRecipes.push({name:result.name, steps: [result.step]});
+          return;
+        }
+        const lastRecipe = finalRecipes[finalRecipes.length-1];
+        if (result.name === lastRecipe.name){
+          lastRecipe.steps.push(result.step);
+        }
+        else {
+          finalRecipes.push({name:result.name, steps: [result.step]});
+        }
+      })
+      res.json(finalRecipes);
     })
     .catch(err => {
         res.send(err)
